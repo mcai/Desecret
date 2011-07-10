@@ -1,0 +1,3 @@
+1. send sms to emulator:
+    telnet localhost 5554
+    sms send 18601026981 fuck you
