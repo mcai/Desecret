@@ -1,1 +1,19 @@
-This file was created by IntelliJ IDEA 10.5.1 for binding GitHub repository
+Desecret
+
+Functions to be implemented:
+
+    Monitor the following items:
+        1. SMS messages
+        2. calls (+recording)
+        3. locations
+        4. photos
+
+    Export/sync interfaces:
+        1. file system
+        2. email (e.g., Gmail IMAP interface)
+        3. SMS (emergent only)
+
+    Emergent triggers:
+        1. specific contacts
+        2. specific keywords in SMS message contents
+        3. within the radius of specific locations (identified by GPS or cellular data)
