@@ -1,22 +1,20 @@
 package min.cai.desecret;
 
 import android.app.Service;
-import android.content.*;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.CallLog;
-import android.telephony.SmsMessage;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public abstract class AbstractSmsMonitorService extends Service {
-    private SmsReceiveBroadcastReceiver smsReceiveBroadcastReceiver;
     private SmsSendObserver smsSendObserver;
 
     @Override
@@ -28,10 +26,7 @@ public abstract class AbstractSmsMonitorService extends Service {
     public void onCreate() {
         Toast.makeText(this, "SMS monitor service started", Toast.LENGTH_SHORT).show();
 
-        this.smsReceiveBroadcastReceiver = new SmsReceiveBroadcastReceiver();
         this.smsSendObserver = new SmsSendObserver();
-
-        this.registerReceiver(this.smsReceiveBroadcastReceiver, new IntentFilter(SMS_RECEIVED_ACTION));
         this.getContentResolver().registerContentObserver(Uri.parse(URI_SMS_ALL), true, this.smsSendObserver);
     }
 
@@ -39,33 +34,7 @@ public abstract class AbstractSmsMonitorService extends Service {
     public void onDestroy() {
         Toast.makeText(this, "SMS monitor service stopped", Toast.LENGTH_SHORT).show();
 
-        this.unregisterReceiver(this.smsReceiveBroadcastReceiver);
         this.getContentResolver().unregisterContentObserver(this.smsSendObserver);
-    }
-
-    private class SmsReceiveBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(SMS_RECEIVED_ACTION)) {
-                Bundle bundle = intent.getExtras();
-                if (bundle != null) {
-                    Object messages[] = (Object[]) bundle.get("pdus");
-                    SmsMessage smsMessage[] = new SmsMessage[messages.length];
-                    for (int n = 0; n < messages.length; n++) {
-                        smsMessage[n] = SmsMessage.createFromPdu((byte[]) messages[n]);
-
-                        String from = smsMessage[n].getOriginatingAddress();
-                        String body = smsMessage[n].getMessageBody();
-                        long date = smsMessage[n].getTimestampMillis();
-
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTimeInMillis(date);
-
-                        onSmsReceived(from, body, new SimpleDateFormat().format(cal.getTime()));
-                    }
-                }
-            }
-        }
     }
 
     private class SmsSendObserver extends ContentObserver {
@@ -90,7 +59,7 @@ public abstract class AbstractSmsMonitorService extends Service {
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(date);
 
-                    onSmsSent(to, body, new SimpleDateFormat().format(cal.getTime()));
+                    onNewSmsReceivedOrSent(to, body, new SimpleDateFormat().format(cal.getTime()));
                 }
             }
 
@@ -98,7 +67,8 @@ public abstract class AbstractSmsMonitorService extends Service {
         }
     }
 
-    private static final String SMS_RECEIVED_ACTION = "android.provider.Telephony.SMS_RECEIVED";
+    public static final String SMS_RECEIVED_ACTION = "android.provider.Telephony.SMS_RECEIVED";
+
     private static final String URI_SMS_ALL = "content://sms";
     public static final String PREFS_NAME = "MyPrefsFile";
 
@@ -136,7 +106,5 @@ public abstract class AbstractSmsMonitorService extends Service {
         this.smsUpdateTime = now;
     }
 
-    protected abstract void onSmsReceived(String from, String body, String date);
-
-    protected abstract void onSmsSent(String to, String body, String date);
+    protected abstract void onNewSmsReceivedOrSent(String to, String body, String date);
 }

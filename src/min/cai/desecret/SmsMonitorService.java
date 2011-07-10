@@ -8,8 +8,8 @@ public class SmsMonitorService extends AbstractSmsMonitorService {
         Toast.makeText(SmsMonitorService.this, "New SMS message received, " + "from = " + from + ", body = " + body + ", date = " + date, Toast.LENGTH_LONG).show();
     }
 
-    protected void onSmsSent(String to, String body, String date) {
+    protected void onNewSmsReceivedOrSent(String address, String body, String date) {
         //TODO: record it in an external text file
-        Toast.makeText(SmsMonitorService.this, "New SMS message sent, " + "to = " + to + ", body = " + body + ", date = " + date, Toast.LENGTH_LONG).show();
+        Toast.makeText(SmsMonitorService.this, "New SMS message received or sent, " + "address = " + address + ", body = " + body + ", date = " + date, Toast.LENGTH_LONG).show();
     }
 }
