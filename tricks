@@ -1,3 +1,22 @@
-1. send sms to emulator:
+1. communicating with the Android emulator via telnet:
     telnet localhost 5554
-    sms send 18601026981 fuck you
+
+    send sms to emulator: sms send 18601026981 fuck you
+    set the geoposition: geo fix 13.24 52.31
+    
+2. payment details to be bound to specific mobile IMEI code:
+	<user> -> dropbox db:
+		unregistered-> payment via paypal mobile payment library -> register in dropbox db
+
+3. server (service) and client (GUI):
+	server <-> dropbox db <-> client
+	
+the dropbox backed db provide an instant messaging + status framework (learn from past InteliIM app)?:
+	InstantMessenger, e.g.:
+		sendMessage(to, message)
+		messageReceived(from, Message)
+
+server:
+	1. sendMessage
+	
+client:

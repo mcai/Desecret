@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Desecret.iml" filepath="$PROJECT_DIR$/Desecret.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Desecret/Desecret.iml" filepath="$PROJECT_DIR$/Desecret/Desecret.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EmulatorBot/EmulatorBot.iml" filepath="$PROJECT_DIR$/EmulatorBot/EmulatorBot.iml" />
     </modules>
   </component>
 </project>

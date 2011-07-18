@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/commons-io-2.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/signpost-commonshttp4-1.2.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/simple-xml-2.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/commons-lang-2.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/apache-mime4j-0.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/json_simple-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/httpmime-4.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/signpost-core-1.2.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/commons-math-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/android-support-v4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
