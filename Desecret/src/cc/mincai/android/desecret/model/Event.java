@@ -1,30 +1,24 @@
 package cc.mincai.android.desecret.model;
 
-import org.simpleframework.xml.Attribute;
-
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
-public abstract class UserEvent implements Identifiable {
-    @Attribute
+public abstract class Event implements Identifiable, Serializable {
     private String id;
-    @Attribute
     private String userId;
-    @Attribute
     private Date timeCreated;
-    @Attribute
     private String description;
 
-    public UserEvent(
-            @Attribute(name = "id") String id,
-            @Attribute(name = "userId") String userId,
-            @Attribute(name = "description") String description
-    ) {
+    public Event(String id, String userId, String description) {
+        this(id, userId, Calendar.getInstance().getTime(), description);
+    }
+
+    public Event(String id, String userId, Date timeCreated, String description) {
         this.id = id;
         this.userId = userId;
+        this.timeCreated = timeCreated;
         this.description = description;
-
-        this.timeCreated = Calendar.getInstance().getTime();
     }
 
     @Override

@@ -1,23 +1,11 @@
 package cc.mincai.android.desecret.model;
 
-import org.simpleframework.xml.Attribute;
-
-public abstract class SmsEvent extends UserEvent {
-    @Attribute
+public abstract class SmsEvent extends Event {
     private String counterpartId;
-    @Attribute
     private String date;
-    @Attribute
     private String text;
 
-    public SmsEvent(
-            @Attribute(name = "id") String id,
-            @Attribute(name = "userId") String userId,
-            @Attribute(name = "counterpartId") String counterpartId,
-            @Attribute(name = "date") String date,
-            @Attribute(name = "text") String text,
-            @Attribute(name = "description") String description
-    ) {
+    public SmsEvent(String id, String userId, String counterpartId, String date, String text, String description) {
         super(id, userId, description);
         this.counterpartId = counterpartId;
         this.date = date;

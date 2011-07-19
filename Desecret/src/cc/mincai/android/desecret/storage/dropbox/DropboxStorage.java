@@ -65,10 +65,8 @@ public class DropboxStorage extends DropboxAPI implements CloudStorage {
     @Override
     public void uploadFile(String path) {
         try {
-            this.client.putFile(DROPBOX_ROOT_DIR, DROPBOX_CLOUD_STORAGE_ROOT_DIR, path, this.context.openFileInput(path));
+            this.client.putFile(DROPBOX_ROOT_DIR, DROPBOX_CLOUD_STORAGE_ROOT_DIR, this.context.getFileStreamPath(path));
         } catch (DropboxException e) {
-            throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

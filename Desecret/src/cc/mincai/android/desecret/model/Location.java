@@ -1,23 +1,17 @@
 package cc.mincai.android.desecret.model;
 
 import com.google.android.maps.GeoPoint;
-import org.simpleframework.xml.Attribute;
 
-public class Location {
-    @Attribute
+import java.io.Serializable;
+
+public class Location implements Serializable {
     private double longitude;
-    @Attribute
     private double latitude;
-    @Attribute
     private String description;
 
-    private GeoPoint point;
+    private transient GeoPoint point;
 
-    public Location(
-            @Attribute(name = "longitude") double longitude,
-            @Attribute(name = "latitude") double latitude,
-            @Attribute(name = "description") String description
-    ) {
+    public Location(double longitude, double latitude, String description) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.description = description;

@@ -4,14 +4,19 @@ import android.content.Context;
 import cc.mincai.android.desecret.storage.CloudStorage;
 import cc.mincai.android.desecret.storage.dropbox.DropboxStorage;
 import cc.mincai.android.desecret.util.Predicate;
+import cc.mincai.android.desecret.util.SerializationHelper;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class DropboxMessageTransport extends MessageTransport {
     private CloudStorage cloudStorage;
+
+    private Timer timer = new Timer();
 
     public DropboxMessageTransport(Context context) {
         super(context);
@@ -22,23 +27,12 @@ public class DropboxMessageTransport extends MessageTransport {
     public void open() {
         this.cloudStorage.login();
 
-        Thread thread = new Thread(new Runnable() {
+        this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                for(;;) {
-                    pollNewMessages();
-
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                pollNewMessages();
             }
-        });
-
-        thread.setDaemon(true);
-        thread.start();
+        }, 0, UPDATE_INTERVAL);
     }
 
     @Override
@@ -50,15 +44,16 @@ public class DropboxMessageTransport extends MessageTransport {
         List<String> newMessageFileNames = this.cloudStorage.listFiles("", new Predicate<String>() {
             @Override
             public boolean apply(String fileName) {
-                return fileName.startsWith(FILE_NAME_PREFIX_MESSAGE + getUserId() + "_");
+//                return fileName.startsWith(FILE_NAME_PREFIX_MESSAGE + getUserId() + "_"); //TODO
+                return fileName.startsWith(FILE_NAME_PREFIX_MESSAGE);
             }
         });
 
-        for(String newMessageFileName : newMessageFileNames) {
+        for (String newMessageFileName : newMessageFileNames) {
             this.cloudStorage.downloadFile(newMessageFileName, newMessageFileName);
 
             try {
-                this.dispatch(new MessageReceivedEvent(Message.fromXml(this.getContext().openFileInput(newMessageFileName))));
+                this.dispatch(new MessageReceivedEvent(SerializationHelper.deserialize(this.getContext().openFileInput(newMessageFileName), Message.class)));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -70,10 +65,10 @@ public class DropboxMessageTransport extends MessageTransport {
     @Override
     public void sendMessage(Message message) {
         try {
-            String fileName = FILE_NAME_PREFIX_MESSAGE + message.getTo() + "_" + UUID.randomUUID().toString();
+            String fileName = FILE_NAME_PREFIX_MESSAGE + message.getEvent().getUserId() + "_" + UUID.randomUUID().toString();
 
             PrintWriter pw = new PrintWriter(this.getContext().openFileOutput(fileName, Context.MODE_PRIVATE));
-            pw.write(Message.toXml(message));
+            pw.write(SerializationHelper.serialize(message));
             pw.flush();
             pw.close();
 
@@ -84,4 +79,6 @@ public class DropboxMessageTransport extends MessageTransport {
     }
 
     private static final String FILE_NAME_PREFIX_MESSAGE = "message_";
+
+    private static final long UPDATE_INTERVAL = 5000;
 }

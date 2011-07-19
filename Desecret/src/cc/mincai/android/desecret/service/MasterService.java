@@ -3,9 +3,12 @@ package cc.mincai.android.desecret.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Toast;
-import cc.mincai.android.desecret.model.*;
+import cc.mincai.android.desecret.model.DropboxMessageTransport;
+import cc.mincai.android.desecret.model.Event;
+import cc.mincai.android.desecret.model.Message;
+import cc.mincai.android.desecret.model.MessageTransport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +20,7 @@ public class MasterService extends Service {
     private boolean registered;
     private MessageTransport messageTransport;
 
-    private List<UserEvent> pendingUserEvents;
+    private List<Event> pendingEvents;
 
     private Timer timer = new Timer();
 
@@ -27,20 +30,29 @@ public class MasterService extends Service {
     }
 
     @Override
-    public void onCreate() {
-        Toast.makeText(this, "Master service started", Toast.LENGTH_SHORT).show();
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            Event event = (Event) intent.getExtras().getSerializable("event");
+            if (event != null) {
+                this.addEvent(event);
+            }
+        }
 
+        return Service.START_STICKY;
+    }
+
+    @Override
+    public void onCreate() {
         this.messageTransport = new DropboxMessageTransport(this);
 
-        this.pendingUserEvents = new ArrayList<UserEvent>();
+        this.pendingEvents = new ArrayList<Event>();
 
         this.register();
     }
 
     @Override
     public void onDestroy() {
-        Toast.makeText(this, "Master service stopped", Toast.LENGTH_SHORT).show();
-
         this.deregister();
     }
 
@@ -48,11 +60,11 @@ public class MasterService extends Service {
         this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                for (UserEvent userEvent : pendingUserEvents) {
-                    getMessageTransport().sendMessage(new Message("id", "from", "to", new UserEventMessageContent(userEvent))); //TODO: fill the fields
+                for (Event event : pendingEvents) {
+                    getMessageTransport().sendMessage(new Message(event));
                 }
 
-                pendingUserEvents.clear();
+                pendingEvents.clear();
             }
         }, 0, UPDATE_INTERVAL);
     }
@@ -81,8 +93,8 @@ public class MasterService extends Service {
         }
     }
 
-    public void addUserEvent(UserEvent userEvent) {
-        this.pendingUserEvents.add(userEvent);
+    public void addEvent(Event event) {
+        this.pendingEvents.add(event);
     }
 
     public MessageTransport getMessageTransport() {

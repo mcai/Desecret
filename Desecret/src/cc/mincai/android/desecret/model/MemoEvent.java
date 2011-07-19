@@ -1,17 +1,9 @@
 package cc.mincai.android.desecret.model;
 
-import org.simpleframework.xml.Attribute;
-
-public class MemoEvent extends UserEvent {
-    @Attribute
+public class MemoEvent extends Event {
     private String text;
 
-    public MemoEvent(
-            @Attribute(name = "id") String id,
-            @Attribute(name = "userId") String userId,
-            @Attribute(name = "text") String text,
-            @Attribute(name = "description") String description
-    ) {
+    public MemoEvent(String id, String userId, String text, String description) {
         super(id, userId, description);
         this.text = text;
     }

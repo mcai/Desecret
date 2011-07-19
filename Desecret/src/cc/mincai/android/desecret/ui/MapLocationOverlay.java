@@ -2,8 +2,8 @@ package cc.mincai.android.desecret.ui;
 
 import android.content.Context;
 import android.graphics.*;
-import cc.mincai.android.desecret.R;
 import cc.mincai.android.desecret.model.Location;
+import cc.mincai.android.desecret.R;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;

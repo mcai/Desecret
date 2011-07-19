@@ -12,11 +12,10 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import cc.mincai.android.desecret.R;
+import cc.mincai.android.desecret.*;
 import cc.mincai.android.desecret.model.Location;
 import cc.mincai.android.desecret.model.LocationChangedEvent;
 import cc.mincai.android.desecret.model.MessageReceivedEvent;
-import cc.mincai.android.desecret.model.UserEventMessageContent;
 import cc.mincai.android.desecret.service.MasterService;
 import cc.mincai.android.desecret.util.Action1;
 import com.google.android.maps.*;
@@ -39,6 +38,7 @@ public class MainActivity extends MapActivity implements GestureDetector.OnGestu
     private GestureDetector detector;
 
     private MasterService masterService;
+    private ServiceConnection masterServiceConnection;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +74,7 @@ public class MainActivity extends MapActivity implements GestureDetector.OnGestu
         return false;
     }
 
-    public void onLocationChanged(cc.mincai.android.desecret.model.Location location) {
+    public void onLocationChanged(Location location) {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         this.textViewLatitude.setText(String.valueOf(lat));
@@ -157,26 +157,33 @@ public class MainActivity extends MapActivity implements GestureDetector.OnGestu
 
     private void register() {
         if (!this.registered) {
+            this.masterServiceConnection = new ServiceConnection() {
+                public void onServiceConnected(ComponentName className, IBinder binder) {
+                    masterService = ((MasterService.MyBinder) binder).getService();
+
+                    masterService.getMessageTransport().addListener(new Action1<MessageReceivedEvent>() {
+                        @Override
+                        public void apply(final MessageReceivedEvent event) {
+                            if(event.getMessage().getEvent() instanceof LocationChangedEvent) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        onLocationChanged(((LocationChangedEvent) event.getMessage().getEvent()).getNewLocation());
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+
+                public void onServiceDisconnected(ComponentName className) {
+                    masterService = null;
+                }
+            };
+
             this.bindService(
                     new Intent(this, MasterService.class),
-                    new ServiceConnection() {
-                        public void onServiceConnected(ComponentName className, IBinder binder) {
-                            masterService = ((MasterService.MyBinder) binder).getService();
-
-                            masterService.getMessageTransport().addListener(new Action1<MessageReceivedEvent>() {
-                                @Override
-                                public void apply(MessageReceivedEvent event) {
-                                    if (event.getMessage().getContent() instanceof UserEventMessageContent && ((UserEventMessageContent) event.getMessage().getContent()).getUserEvent() instanceof LocationChangedEvent) {
-                                        onLocationChanged(((LocationChangedEvent) ((UserEventMessageContent) event.getMessage().getContent()).getUserEvent()).getNewLocation());
-                                    }
-                                }
-                            });
-                        }
-
-                        public void onServiceDisconnected(ComponentName className) {
-                            masterService = null;
-                        }
-                    },
+                    this.masterServiceConnection,
                     Context.BIND_AUTO_CREATE
             );
 
@@ -186,6 +193,8 @@ public class MainActivity extends MapActivity implements GestureDetector.OnGestu
 
     private void deregister() {
         if (this.registered) {
+            this.unbindService(this.masterServiceConnection);
+
             this.registered = false;
         }
     }
