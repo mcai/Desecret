@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Desecret_client</string>
+    <string name="app_name">Desecret</string>
     <string name="hello">Hello World, SmsMonitorActivity!</string>
+    <string name="login_prompt">Login:</string>
+    <string name="password_prompt">Password: </string>
+    <string name="button_login_text">Login</string>
+    <string name="button_register_text">Register</string>
+    <string name="button_help_text">Help</string>
 </resources>

@@ -12,13 +12,16 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import cc.mincai.android.desecret.*;
+import cc.mincai.android.desecret.R;
 import cc.mincai.android.desecret.model.Location;
 import cc.mincai.android.desecret.model.LocationChangedEvent;
 import cc.mincai.android.desecret.model.MessageReceivedEvent;
 import cc.mincai.android.desecret.service.MasterService;
 import cc.mincai.android.desecret.util.Action1;
-import com.google.android.maps.*;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,10 +46,11 @@ public class MainActivity extends MapActivity implements GestureDetector.OnGestu
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.main);
 
-        this.textViewLatitude = (TextView) findViewById(R.id.TextView02);
-        this.textViewLongitude = (TextView) findViewById(R.id.TextView04);
+        this.textViewLongitude = (TextView) findViewById(R.id.TextViewLongitutde);
+        this.textViewLatitude = (TextView) findViewById(R.id.TextViewLatitude);
 
         this.detector = new GestureDetector(this, this);
 
@@ -75,14 +79,17 @@ public class MainActivity extends MapActivity implements GestureDetector.OnGestu
     }
 
     public void onLocationChanged(Location location) {
-        double lat = location.getLatitude();
         double lng = location.getLongitude();
-        this.textViewLatitude.setText(String.valueOf(lat));
+        double lat = location.getLatitude();
+        
         this.textViewLongitude.setText(String.valueOf(lng));
+        this.textViewLatitude.setText(String.valueOf(lat));
 
-        int lat1 = (int) (location.getLatitude() * 1E6);
         int lng1 = (int) (location.getLongitude() * 1E6);
+        int lat1 = (int) (location.getLatitude() * 1E6);
+        
         GeoPoint point = new GeoPoint(lat1, lng1);
+        
         this.mapController.animateTo(point);
         this.mapController.setCenter(point);
 
@@ -164,7 +171,7 @@ public class MainActivity extends MapActivity implements GestureDetector.OnGestu
                     masterService.getMessageTransport().addListener(new Action1<MessageReceivedEvent>() {
                         @Override
                         public void apply(final MessageReceivedEvent event) {
-                            if(event.getMessage().getEvent() instanceof LocationChangedEvent) {
+                            if (event.getMessage().getEvent() instanceof LocationChangedEvent) {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {

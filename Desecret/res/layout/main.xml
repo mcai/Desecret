@@ -5,27 +5,17 @@
               android:layout_height="fill_parent"
         >
 
-    <TextView android:layout_height="wrap_content" android:id="@+id/textViewDescription"
-              android:layout_width="wrap_content" android:text="Desecret client"/>
-
     <LinearLayout android:id="@+id/linearLayout1"
                   android:layout_height="wrap_content" android:layout_width="fill_parent"
                   android:orientation="horizontal">
+        <TextView android:text="Longitute: " android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TextView03"></TextView>
+        <TextView android:text="unknown" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TextViewLongitutde"></TextView>
 
-        <TextView android:text="Latitude: " android:layout_height="wrap_content"
-                  android:layout_width="wrap_content" android:id="@+id/TextView01"/>
+        <TextView android:layout_height="wrap_content"
+                  android:layout_width="wrap_content" android:id="@+id/TextView01" android:text=", Latitude: "/>
         <TextView android:text="unknown" android:layout_height="wrap_content"
-                  android:layout_width="wrap_content" android:id="@+id/TextView02"/>
+                  android:layout_width="wrap_content" android:id="@+id/TextViewLatitude"/>
 
-    </LinearLayout>
-
-    <LinearLayout android:id="@+id/linearLayout2"
-                  android:layout_height="wrap_content" android:layout_width="fill_parent">
-
-        <TextView android:text="Longitute: " android:layout_height="wrap_content"
-                  android:layout_width="wrap_content" android:id="@+id/TextView03"/>
-        <TextView android:text="unknown" android:layout_height="wrap_content"
-                  android:layout_width="wrap_content" android:id="@+id/TextView04"/>
     </LinearLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"

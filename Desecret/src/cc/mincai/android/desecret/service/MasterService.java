@@ -56,7 +56,7 @@ public class MasterService extends Service {
         this.deregister();
     }
 
-    private void pollForUpdates() {
+    private void sendPendingMessages() {
         this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -72,7 +72,7 @@ public class MasterService extends Service {
     private void register() {
         if (!this.registered) {
             this.messageTransport.open();
-            this.pollForUpdates();
+            this.sendPendingMessages();
 
             this.startService(new Intent(this, LocationMonitorService.class));
             this.startService(new Intent(this, SmsMonitorService.class));
