@@ -1,13 +1,14 @@
-package cc.mincai.android.desecret.ui;
+package cc.mincai.android.desecret.ui.view;
 
 import android.content.Context;
 import android.graphics.*;
-import cc.mincai.android.desecret.model.Location;
 import cc.mincai.android.desecret.R;
+import cc.mincai.android.desecret.model.Location;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MapLocationOverlay extends Overlay {
@@ -15,6 +16,10 @@ public class MapLocationOverlay extends Overlay {
     private Paint paintInner, paintBorder, paintText, paintLine;
     private Location selectedMapLocation;
     private List<Location> mapLocations;
+
+    public MapLocationOverlay(Context context, Location... mapLocations) {
+        this(context, Arrays.asList(mapLocations));
+    }
 
     public MapLocationOverlay(Context context, List<Location> mapLocations) {
         this.mapLocations = mapLocations;

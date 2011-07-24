@@ -1,10 +1,10 @@
 package cc.mincai.android.desecret.model;
 
-public class MemoEvent extends Event {
+public class MemoMessage extends Message {
     private String text;
 
-    public MemoEvent(String id, String userId, String text, String description) {
-        super(id, userId, description);
+    public MemoMessage(String userId, String text) {
+        super();
         this.text = text;
     }
 

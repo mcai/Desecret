@@ -1,30 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2010-2011 by Min Cai (min.cai.china@gmail.com).
- *
- * This file is part of the FleximJ multicore architectural simulator.
- *
- * FleximJ is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * FleximJ is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with FleximJ. If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package cc.mincai.android.desecret.storage.dropbox;
 
-import android.content.Context;
 import cc.mincai.android.desecret.storage.CloudStorage;
-import cc.mincai.android.desecret.util.Predicate;
+import cc.mincai.android.desecret.storage.FileSystemAccessProvider;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,37 +16,32 @@ public class DropboxStorage extends DropboxAPI implements CloudStorage {
     private String userName;
     private String password;
 
-    private Context context;
+    private FileSystemAccessProvider fileSystemAccessProvider;
 
-    public DropboxStorage(Context context) {
-        this(context, "min.cai.china@gmail.com", "bywwnss");
+    public DropboxStorage(FileSystemAccessProvider fileSystemAccessProvider) {
+        this(fileSystemAccessProvider, "min.cai.china@gmail.com", "bywwnss");
     }
 
-    public DropboxStorage(Context context, String userName, String password) {
-        this.context = context;
+    public DropboxStorage(FileSystemAccessProvider fileSystemAccessProvider, String userName, String password) {
+        this.fileSystemAccessProvider = fileSystemAccessProvider;
         this.userName = userName;
         this.password = password;
     }
 
     @Override
-    public void login() {
-        try {
-            Config config = this.getConfig(this.context.getAssets().open("testing.json"), true);
-            this.authenticate(config, this.userName, this.password);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void connect() {
+        this.authenticate(this.getConfig(this.fileSystemAccessProvider.openEmbeddedFileAsInputStream("testing.json"), true), this.userName, this.password);
     }
 
     @Override
-    public void logout() {
+    public void disconnect() {
         this.deauthenticate();
     }
 
     @Override
-    public void uploadFile(String path) {
+    public void uploadFile(String fromPath, String remoteFolderName) {
         try {
-            this.client.putFile(DROPBOX_ROOT_DIR, DROPBOX_CLOUD_STORAGE_ROOT_DIR, this.context.getFileStreamPath(path));
+            this.client.putFile(DROPBOX_ROOT_DIR, DROPBOX_CLOUD_STORAGE_ROOT_DIR + "/" + remoteFolderName, this.fileSystemAccessProvider.getFile(fromPath));
         } catch (DropboxException e) {
             throw new RuntimeException(e);
         }
@@ -75,7 +51,7 @@ public class DropboxStorage extends DropboxAPI implements CloudStorage {
     public void downloadFile(String fromPath, String toPath) {
         try {
             HttpResponse response = this.client.getFile(DROPBOX_ROOT_DIR, DROPBOX_CLOUD_STORAGE_ROOT_DIR + "/" + fromPath);
-            IOUtils.copy(response.getEntity().getContent(), this.context.openFileOutput(toPath, Context.MODE_PRIVATE));
+            IOUtils.copy(response.getEntity().getContent(), this.fileSystemAccessProvider.openFileAsOutputStream(toPath));
             response.getEntity().consumeContent();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -94,7 +70,7 @@ public class DropboxStorage extends DropboxAPI implements CloudStorage {
     }
 
     @Override
-    public List<String> listFiles(String path, Predicate<String> fileNameFilter) {
+    public List<String> listFiles(String path) {
         try {
             List<String> strs = new ArrayList<String>();
 
@@ -102,10 +78,7 @@ public class DropboxStorage extends DropboxAPI implements CloudStorage {
             List<DropboxAPI.Entry> contents = entry.contents;
             if (contents != null) {
                 for (DropboxAPI.Entry ent : contents) {
-                    String fileName = ent.fileName();
-                    if(fileNameFilter.apply(fileName)) {
-                        strs.add(fileName);
-                    }
+                    strs.add(ent.fileName());
                 }
             }
 

@@ -1,6 +1,7 @@
 package cc.mincai.android.desecret.util;
 
-import cc.mincai.android.desecret.model.Event;
+import cc.mincai.android.desecret.model.ActivityEvent;
+import cc.mincai.android.desecret.model.Message;
 import com.google.gson.*;
 import org.apache.commons.io.IOUtils;
 
@@ -14,7 +15,8 @@ public class SerializationHelper {
 
     static {
         gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Event.class, new AbstractTypeAdapter<Event>());
+        gsonBuilder.registerTypeAdapter(Message.class, new AbstractTypeAdapter<Message>());
+        gsonBuilder.registerTypeAdapter(ActivityEvent.class, new AbstractTypeAdapter<ActivityEvent>());
     }
 
     public static <T> String serialize(T obj) {

@@ -1,14 +1,14 @@
 package cc.mincai.android.desecret.model;
 
-public abstract class SmsEvent extends ActivityEvent {
+public abstract class PhoneCallEvent extends ActivityEvent {
     private String counterpartId;
     private String time;
-    private String text;
+    private double durationInMinutes;
 
-    public SmsEvent(String counterpartId, String time, String text) {
+    public PhoneCallEvent(String counterpartId, String time, double durationInMinutes) {
         this.counterpartId = counterpartId;
         this.time = time;
-        this.text = text;
+        this.durationInMinutes = durationInMinutes;
     }
 
     public String getCounterpartId() {
@@ -19,7 +19,7 @@ public abstract class SmsEvent extends ActivityEvent {
         return time;
     }
 
-    public String getText() {
-        return text;
+    public double getDurationInMinutes() {
+        return durationInMinutes;
     }
 }

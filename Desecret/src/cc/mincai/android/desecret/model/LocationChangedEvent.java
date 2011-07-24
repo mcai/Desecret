@@ -1,14 +1,18 @@
 package cc.mincai.android.desecret.model;
 
-public class LocationChangedEvent extends Event {
+public class LocationChangedEvent extends ActivityEvent {
     private Location newLocation;
 
-    public LocationChangedEvent(String id, String userId, Location newLocation, String description) {
-        super(id, userId, description);
+    public LocationChangedEvent(Location newLocation) {
         this.newLocation = newLocation;
     }
 
     public Location getNewLocation() {
         return newLocation;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("moved to: %s", newLocation);
     }
 }

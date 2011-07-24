@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import cc.mincai.android.desecret.service.MasterService;
+import cc.mincai.android.desecret.service.DesecretService;
 
 public class SmsReceivedReceiver extends BroadcastReceiver {
     @Override
@@ -22,9 +22,9 @@ public class SmsReceivedReceiver extends BroadcastReceiver {
                     String body = smsMessage[n].getMessageBody();
 
                     if (body.equals("#start_desecret")) {
-                        context.startService(new Intent(context, MasterService.class));
+                        context.startService(new Intent(context, DesecretService.class));
                     } else if (body.equals("#stop_desecret")) {
-                        context.stopService(new Intent(context, MasterService.class));
+                        context.stopService(new Intent(context, DesecretService.class));
                     }
                 }
             }

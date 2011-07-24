@@ -25,6 +25,8 @@ public class EmulatorBot {
 
         PrintWriter pw = new PrintWriter(telnet.getOutputStream());
 
+        //TODO: add send SMS emulation
+
         for(int i = 0; i < 100; i++) {
             String s = "geo fix " + x + " " + y;
             pw.write(s + "\n");
@@ -36,7 +38,7 @@ public class EmulatorBot {
             y += 0.01;
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(30000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

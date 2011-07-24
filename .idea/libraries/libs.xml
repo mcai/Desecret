@@ -10,6 +10,8 @@
       <root url="jar://$PROJECT_DIR$/Desecret/libs/signpost-core-1.2.1.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/Desecret/libs/commons-math-2.2.jar!/" />
       <root url="jar://$PROJECT_DIR$/Desecret/libs/gson-1.7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/geocoder-java-0.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Desecret/libs/commons-httpclient-3.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

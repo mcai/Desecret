@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
-public abstract class Message implements Serializable {
+public abstract class ActivityEvent implements Serializable {
     private Date timeCreated;
 
-    public Message() {
+    public ActivityEvent() {
         this(Calendar.getInstance().getTime());
     }
 
-    public Message(Date timeCreated) {
+    public ActivityEvent(Date timeCreated) {
         this.timeCreated = timeCreated;
     }
 

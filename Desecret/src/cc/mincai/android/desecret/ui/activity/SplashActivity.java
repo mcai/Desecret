@@ -1,4 +1,4 @@
-package cc.mincai.android.desecret.ui;
+package cc.mincai.android.desecret.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;

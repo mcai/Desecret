@@ -1,4 +1,4 @@
-package cc.mincai.android.desecret.ui;
+package cc.mincai.android.desecret.ui.activity;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -10,12 +10,12 @@ import android.provider.Browser;
 import android.view.KeyEvent;
 import cc.mincai.android.desecret.R;
 
-public class AboutActivity extends Activity {
+public class HelpActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.splash); //TODO: to be replaced with R.layout.about
+        setContentView(R.layout.about);
 
         Cursor bookmarks = Browser.getAllBookmarks(getContentResolver());
         int urlColumn = bookmarks.getColumnIndex(Browser.BookmarkColumns.URL);
@@ -28,8 +28,6 @@ public class AboutActivity extends Activity {
                 };
 
         Cursor results = managedQuery(Browser.BOOKMARKS_URI, projection, null, null, Browser.BookmarkColumns.URL + " ASC");
-
-
     }
 
     private boolean notContainsBookmark(String url) {
