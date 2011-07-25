@@ -1,7 +1,7 @@
 package cc.mincai.android.desecret.util;
 
-import cc.mincai.android.desecret.model.ActivityEvent;
-import cc.mincai.android.desecret.model.Message;
+import cc.mincai.android.desecret.core.ActivityEvent;
+import cc.mincai.android.desecret.core.Message;
 import com.google.gson.*;
 import org.apache.commons.io.IOUtils;
 

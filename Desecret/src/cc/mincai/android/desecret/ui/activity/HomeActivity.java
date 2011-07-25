@@ -15,7 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import cc.mincai.android.desecret.R;
-import cc.mincai.android.desecret.model.*;
+import cc.mincai.android.desecret.core.*;
 import cc.mincai.android.desecret.service.DesecretService;
 import cc.mincai.android.desecret.util.Action1;
 

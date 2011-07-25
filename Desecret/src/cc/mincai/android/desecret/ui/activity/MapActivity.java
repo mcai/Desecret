@@ -5,7 +5,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import cc.mincai.android.desecret.R;
-import cc.mincai.android.desecret.model.Location;
+import cc.mincai.android.desecret.core.Location;
 import cc.mincai.android.desecret.ui.view.MapLocationOverlay;
 import com.google.android.maps.MapView;
 

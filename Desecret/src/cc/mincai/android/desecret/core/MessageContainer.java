@@ -1,4 +1,4 @@
-package cc.mincai.android.desecret.model;
+package cc.mincai.android.desecret.core;
 
 public class MessageContainer {
     private String from;

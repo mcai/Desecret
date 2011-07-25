@@ -14,9 +14,9 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import cc.mincai.android.desecret.model.DesecretClient;
-import cc.mincai.android.desecret.model.LocationChangedEvent;
-import cc.mincai.android.desecret.model.SmsReceivedEvent;
+import cc.mincai.android.desecret.core.DesecretClient;
+import cc.mincai.android.desecret.core.LocationChangedEvent;
+import cc.mincai.android.desecret.core.SmsReceivedEvent;
 import com.google.android.maps.GeoPoint;
 import com.google.code.geocoder.GeocoderRequestBuilder;
 import com.google.code.geocoder.model.GeocodeResponse;
@@ -89,7 +89,7 @@ public class DesecretService extends Service {
         this.locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                cc.mincai.android.desecret.model.Location loc = new cc.mincai.android.desecret.model.Location(location.getLongitude(), location.getLatitude());
+                cc.mincai.android.desecret.core.Location loc = new cc.mincai.android.desecret.core.Location(location.getLongitude(), location.getLatitude());
 
                 loc.setDescription(geocode(loc.getPoint()));
 

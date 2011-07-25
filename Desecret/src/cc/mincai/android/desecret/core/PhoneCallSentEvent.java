@@ -1,4 +1,4 @@
-package cc.mincai.android.desecret.model;
+package cc.mincai.android.desecret.core;
 
 public class PhoneCallSentEvent extends PhoneCallEvent {
     public PhoneCallSentEvent(String counterpartId, String time, double durationInMinutes) {
