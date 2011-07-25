@@ -7,6 +7,8 @@ import cc.mincai.android.desecret.util.Action2;
 import cc.mincai.android.desecret.util.SerializationHelper;
 
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CloudStorageServerTransport extends ServerTransport {
@@ -25,6 +27,8 @@ public class CloudStorageServerTransport extends ServerTransport {
     private Timer timerContactCloudStorage;
 
     private List<String> userIds;
+    private SimpleDateFormat timeFormat;
+    private Comparator<String> fileNameTimePrefixComparator;
 
     public CloudStorageServerTransport(String userId, Action2<String, Message> onMessageReceivedCallback, Action2<String, ActivityEvent> onTargetActivityEventOcurredCallback, FileSystemAccessProvider fileSystemAccessProvider) {
         this(userId, onMessageReceivedCallback, onTargetActivityEventOcurredCallback, fileSystemAccessProvider, new DropboxStorage(fileSystemAccessProvider));
@@ -48,6 +52,22 @@ public class CloudStorageServerTransport extends ServerTransport {
         this.timerContactCloudStorage = new Timer();
 
         this.addTargetUserIdToMonitor(this.getUserId()); //TODO: test only, to be removed
+
+        this.timeFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+
+        this.fileNameTimePrefixComparator = new Comparator<String>() {
+            @Override
+            public int compare(String s, String s1) {
+                String str = s.substring(0, s.indexOf("_") - 1);
+                String str1 = s1.substring(0, s.indexOf("_") - 1);
+
+                try {
+                    return timeFormat.parse(str).compareTo(timeFormat.parse(str1));
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
     }
 
     @Override
@@ -122,6 +142,7 @@ public class CloudStorageServerTransport extends ServerTransport {
 
     private void pollNewIncomingMessages() {
         List<String> newMessageFileNames = this.cloudStorage.listFiles(this.getUserId() + "/" + FOLDER_NAME_MESSAGES);
+        Collections.sort(newMessageFileNames, this.fileNameTimePrefixComparator);
 
         for (String newMessageFileName : newMessageFileNames) {
             MessageContainer messageContainer = this.pull(MessageContainer.class, this.getUserId() + "/" + FOLDER_NAME_MESSAGES + "/" + newMessageFileName, true);
@@ -130,6 +151,7 @@ public class CloudStorageServerTransport extends ServerTransport {
 
         for(String targetUserIdToMonitor : this.targetUserIdsToMonitor) {
             List<String> activityEventFileNames = this.cloudStorage.listFiles(targetUserIdToMonitor + "/" + FOLDER_NAME_ACTIVITY_EVENTS);
+            Collections.sort(activityEventFileNames, this.fileNameTimePrefixComparator);
 
             for(String activityEventFileName : activityEventFileNames) {
                 if(!this.polledActivityEventFileNames.contains(targetUserIdToMonitor + "/" + FOLDER_NAME_ACTIVITY_EVENTS + "/" + activityEventFileName)) {
@@ -163,7 +185,7 @@ public class CloudStorageServerTransport extends ServerTransport {
     }
 
     public void push(Object obj, String remoteFolderName) {
-        String localFileName = UUID.randomUUID().toString();
+        String localFileName = this.timeFormat.format(Calendar.getInstance().getTime()) + "_" + UUID.randomUUID().toString();
 
         PrintWriter pw = new PrintWriter(this.fileSystemAccessProvider.openFileAsOutputStream(localFileName));
         pw.write(SerializationHelper.serialize(obj));
@@ -197,7 +219,7 @@ public class CloudStorageServerTransport extends ServerTransport {
 
     @Override
     public List<String> getUserIds() {
-        return userIds;
+        return this.userIds;
     }
 
     private static final String FOLDER_NAME_MESSAGES = "messages";

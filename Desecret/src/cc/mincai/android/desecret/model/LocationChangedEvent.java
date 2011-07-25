@@ -13,6 +13,6 @@ public class LocationChangedEvent extends ActivityEvent {
 
     @Override
     public String toString() {
-        return String.format("moved to: %s", newLocation);
+        return String.format("moved to %s", newLocation);
     }
 }

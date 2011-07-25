@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.location.*;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 import cc.mincai.android.desecret.model.DesecretClient;
 import cc.mincai.android.desecret.model.LocationChangedEvent;
 import cc.mincai.android.desecret.model.SmsReceivedEvent;
@@ -22,12 +23,9 @@ import com.google.code.geocoder.model.GeocodeResponse;
 import com.google.code.geocoder.model.GeocoderRequest;
 import com.google.code.geocoder.model.LatLng;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 
 //SplashActivity
 //
@@ -175,22 +173,6 @@ public class DesecretService extends Service {
 
         GeocodeResponse response = geocoder.geocode(request);
         return response.getResults().get(0).getFormattedAddress();
-    }
-
-    public static List<Address> getAddresses(Context context, GeoPoint point) {
-        Geocoder geocoder = new Geocoder(context, new Locale("en_US"));
-        try {
-            // get 10 latitude & longitude from location name
-            List<Address> addresses = geocoder.getFromLocationName("China", 10);
-            for (Address adr : addresses) {
-                Log.d("DesecretService", "Latitude:" + adr.getLatitude() + " , Longitude:" + adr.getLongitude());
-            }
-
-            return geocoder.getFromLocation(point.getLatitudeE6() / 1e6,
-                    point.getLongitudeE6() / 1e6, 1);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private class SmsSendObserver extends ContentObserver {

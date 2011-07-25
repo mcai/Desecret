@@ -33,9 +33,11 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
             }
         });
 
-        this.mapView.getController().setZoom(5);
+        this.mapView.getController().setZoom(14);
 
-        Location location = (Location) getIntent().getSerializableExtra("Location");
+        Location location = (Location) getIntent().getSerializableExtra("location");
+
+        this.setTitle(location.getDescription());
 
         this.mapView.getOverlays().add(new MapLocationOverlay(this, location));
 

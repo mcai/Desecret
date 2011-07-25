@@ -10,12 +10,12 @@ import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import cc.mincai.android.desecret.R;
-import cc.mincai.android.desecret.model.ActivityEvent;
-import cc.mincai.android.desecret.model.DesecretClient;
+import cc.mincai.android.desecret.model.*;
 import cc.mincai.android.desecret.service.DesecretService;
 import cc.mincai.android.desecret.util.Action1;
 
@@ -37,6 +37,34 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.home);
 
         this.listViewContacts = (ListView) findViewById(R.id.listViewContacts);
+
+        this.listViewContacts.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                ActivityEventWrapper selectedActivityEventWrapper = (ActivityEventWrapper) listViewContacts.getItemAtPosition(position);
+
+                if(selectedActivityEventWrapper.getActivityEvent() instanceof LocationChangedEvent) {
+                    Intent launchingIntent = new Intent(HomeActivity.this, MapActivity.class);
+                    launchingIntent.putExtra("location", ((LocationChangedEvent) selectedActivityEventWrapper.getActivityEvent()).getNewLocation());
+                    startActivity(launchingIntent);
+                }
+                else if(selectedActivityEventWrapper.getActivityEvent() instanceof SmsReceivedEvent) {
+                    //TODO
+                }
+                else if(selectedActivityEventWrapper.getActivityEvent() instanceof SmsSentEvent) {
+                    //TODO
+                }
+                else if(selectedActivityEventWrapper.getActivityEvent() instanceof PhoneCallReceivedEvent) {
+                    //TODO
+                }
+                else if(selectedActivityEventWrapper.getActivityEvent() instanceof PhoneCallSentEvent) {
+                    //TODO
+                }
+                else {
+                    //TODO
+                }
+            }
+        });
 
         this.listItems = new LinkedList<ActivityEventWrapper>();
 
